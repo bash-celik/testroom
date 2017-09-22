@@ -85,6 +85,7 @@ public class FetchUtils {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             }else {
+                Log.e(LOG_TAG,inURL.toString());
                 Log.e(LOG_TAG,"Error responese code: " + urlConnection.getResponseCode());
             }
         }catch (IOException e){
@@ -123,6 +124,9 @@ public class FetchUtils {
         List<AlbumSearch> albums = new ArrayList<>();
 
         try {
+
+
+            Log.e(LOG_TAG,albumJSON);
             JSONObject jsonObject = new JSONObject(albumJSON);
             JSONArray album = jsonObject.getJSONArray("data");
 
@@ -154,7 +158,9 @@ public class FetchUtils {
     }
 
     private static float numCovert(int len){
-         float a = len / 60;
+
+
+        float a = len / 60;
          return a;
     }
 

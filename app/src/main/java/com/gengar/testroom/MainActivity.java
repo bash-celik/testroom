@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity  implements  LoaderManager.L
     ArrayList<AlbumSearch > testLista = new ArrayList<>();
 
     public static final String DEEZER_URL =
-            "https://api.deezer.com/search?q=track:\"i need a dollar\"";
+            "http://api.deezer.com/search?q=track:%22straight%20to%20the%20bank%22?";
 
     private void updateUI(List<AlbumSearch> list){
         listView = findViewById(R.id.list);
@@ -99,11 +99,14 @@ public class MainActivity extends AppCompatActivity  implements  LoaderManager.L
                 //ovo bi mozda bilo bolje da se prebaci da bude polje
                 try {
                     TrackPlayer tp = new TrackPlayer(getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
-                    tp.playEpisode(current.getAlbumId());
+                    tp.playTrack(current.getAlbumId());
                     Log.e("Tag","klik0");
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (TooManyPlayersExceptions e){
+                    Log.e("LOG_TAG","Player error to many players",e);
 
+
+                }catch (DeezerError e){
+                    Log.e("LOG_TAG","deezer error",e);
                 }
 
 
