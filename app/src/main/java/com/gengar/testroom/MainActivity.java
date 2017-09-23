@@ -67,53 +67,21 @@ public class MainActivity extends AppCompatActivity  implements  LoaderManager.L
      *
      * */
 
-   ListView listView;
+    ListView listView;
     Button test;
 
     //woohoo
-    String applicationID = "";//ovde ovde
+    String applicationID = "252922";//ovde ovde
     //gore kljuc
     DeezerConnect deezerConnect;
     TextView testTxt;
     Button play;
     String Tag = "com.gengar.roomtest";
+    TrackPlayer tp;
     ArrayList<AlbumSearch > testLista = new ArrayList<>();
 
     public static final String DEEZER_URL =
             "http://api.deezer.com/search?q=track:%22straight%20to%20the%20bank%22?";
-
-    private void updateUI(List<AlbumSearch> list){
-        listView = findViewById(R.id.list);
-        //novi album adapter
-        final AlbumAdapter adapter = new AlbumAdapter(this,list);
-        //setovanje novog album adaptera
-        listView.setAdapter(adapter);
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlbumSearch current = adapter.getItem(i);
-
-
-                //ovo bi mozda bilo bolje da se prebaci da bude polje
-                try {
-                    TrackPlayer tp = new TrackPlayer(getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
-                    tp.playTrack(current.getAlbumId());
-                    Log.e("Tag","klik0");
-                }catch (TooManyPlayersExceptions e){
-                    Log.e("LOG_TAG","Player error to many players",e);
-
-
-                }catch (DeezerError e){
-                    Log.e("LOG_TAG","deezer error",e);
-                }
-
-
-            }
-        });
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -135,6 +103,17 @@ public class MainActivity extends AppCompatActivity  implements  LoaderManager.L
         testLista.add(new AlbumSearch(11,123,123,"TEST1","test1"));
         //definisanje list view, u ovom se prikazuje album_itam.xm;*/
 
+
+       // instanciramo plejer jebeni
+        try{
+            tp = new TrackPlayer(getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
+        }catch (TooManyPlayersExceptions e){
+            Log.e("LOG_TAG","Player error to many players",e);
+
+
+        }catch (DeezerError e){
+            Log.e("LOG_TAG","deezer error",e);
+        }
 
 
 
@@ -203,5 +182,29 @@ public class MainActivity extends AppCompatActivity  implements  LoaderManager.L
         }
 
     }
+    private void updateUI(List<AlbumSearch> list){
+        listView = findViewById(R.id.list);
+        //novi album adapter
+        final AlbumAdapter adapter = new AlbumAdapter(this,list);
+        //setovanje novog album adaptera
+        listView.setAdapter(adapter);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // stopiramo prethodnu
+                tp.stop();
+
+                // pustamo novu
+                AlbumSearch current = adapter.getItem(i);
+                System.out.println(current.getAlbumId());
+                tp.playTrack(current.getAlbumId());
+
+            }
+        });
+
+    }
+
 
 }
